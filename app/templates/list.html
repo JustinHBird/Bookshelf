@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% include 'nav_bar.html' %}
+
+{% block content %}
+    <div id="list-content" class="container">
+        {% for book in books %}
+            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper">
+                        <div class="col s12 m2">
+                            {% if book['cover_image'] %}
+                                <a href="{{ url_for('app.view', book_id=book['id']) }}"><img src="{{ book['cover_image'] }}" alt="" class="responsive-img"></a>
+                            {% else %}
+                                <a href="{{ url_for('app.view', book_id=book['id']) }}"><img src="https://via.placeholder.com/150" alt="" class="responsive-img"></a>
+                                
+                            {% endif %}
+                        </div>
+                        <div class="col s12 m10">
+                            <span class="black-text">
+                                <h5><a href="{{ url_for('app.view', book_id=book['id']) }}">{{ book['title'] }}</a></h5>
+                                <p><span class="">{{ book['publication_date'] }}</span><br>
+                                {{ book['author'] }}<br>
+                                {{ book['description'] }}</p>              
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% if last_title %}
+        <div class="pager">            
+            <a href="?start_after={{ last_title }}" class="waves-effect waves-light btn">Load More</a>
+        </div>
+        {% endif %}
+
+        <!-- Floating Add-->
+        <div class="fixed-action-btn">
+            <a href="{{ url_for('app.add') }}" class="btn-floating btn-large red">
+              <i class="large material-icons">add</i>
+            </a>
+          </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.fixed-action-btn');
+        var instances = M.FloatingActionButton.init(elems);
+    });
+</script>
+<script>
+    document.onscroll = function(){
+        var lastTitle = '{{ last_title }}';
+        var container = document.getElementById('list-content')
+        var bottom = document.body.scrollHeight - window.innerHeight
+        if (document.body.scrollTop == bottom || document.documentElement.scrollTop == bottom) {
+            // Send ajax request to load more 
+        
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                container.innerHTML += 
+                    `<div class="col s12 m8 offset-m2 l6 offset-l3">
+                        <div class="card-panel grey lighten-5 z-depth-1">
+                            <div class="row valign-wrapper">
+                                <div class="col s12 m2">
+                                        <a href="#"><img src="https://via.placeholder.com/150" alt="" class="responsive-img"></a>
+                                </div>
+                                <div class="col s12 m10">
+                                    <span class="black-text">
+                                        <h5><a href="#">AJAX BOOK TITLE</a></h5>
+                                        <p><span class="">Nov 13, 1984</span><br>
+                                        Justin Bird<br>
+                                        The best!</p>              
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            const jsonString = JSON.stringify({start_after: lastTitle})
+            xhttp.open("POST", "{{ url_for('app.ajax') }}");
+            xhttp.setRequestHeader("Content-Type", "application/json")
+            xhttp.send(jsonString);
+
+  }
+  } 
+    
+</script>
+{% endblock %}

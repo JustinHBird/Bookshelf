@@ -1,0 +1,36 @@
+
+{% block navbar %}  
+  <nav>
+    <div class="nav-wrapper container">
+      <a href="{{ url_for('app.index') }}" class="brand-logo">Bookshelf</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="{{ url_for('app.add') }}">Add Book</a></li>
+        <li><a href="{{ url_for('app.index') }}">Books</a></li>
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <a href="{{ url_for('app.index') }}" class="red lighten-2">Bookshelf</a>
+        <!--<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
+        <li><a href="{{ url_for('app.add') }}">Add Book</a></li>
+        <li><a href="{{ url_for('app.index') }}">Books</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger">
+        <i class="material-icons">menu</i>
+      </a>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block scripts %}
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems);
+  });
+
+  // Initialize collapsible (uncomment the lines below if you use the dropdown variation)
+  // var collapsibleElem = document.querySelector('.collapsible');
+  // var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
+
+
+</script>
+{% endblock %}
